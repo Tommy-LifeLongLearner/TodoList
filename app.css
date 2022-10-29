@@ -76,6 +76,7 @@ li {
   color: white;
   text-shadow: 1px 1px 1px green, -1px -1px 1px #ccc;
   font: bold 24px monospace;
+  user-select: none;
 }
 
 li .content {
@@ -92,6 +93,11 @@ li .buttons {
 
 li i:hover {
   color: green;
+  cursor: pointer;
+}
+
+li.completed .content {
+  text-decoration: line-through;
 }
 
 @media only screen and (max-width:700px) {

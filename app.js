@@ -16,6 +16,7 @@ todos.forEach(todo => {
       <i class="fa fa-trash"></i>
     </div>
   `;
+  todo.done && newTodoElement.classList.add("completed");
   todosElementsList.appendChild(newTodoElement);
 });
 
@@ -27,7 +28,8 @@ addButton.onclick = function() {
 
   const newTodo = {
     value: inputElement.value,
-    id: Date.now()
+    id: Date.now(),
+    done: false
   }
   const newTodoElement = document.createElement("LI");
   newTodoElement.innerHTML = `
@@ -43,14 +45,26 @@ addButton.onclick = function() {
   
   todosElementsList.appendChild(newTodoElement);
   todos.push(newTodo);
-  updateLocalStorage();
   inputElement.value = "";
+  updateLocalStorage();
 };
 
 document.querySelector("ul").onclick = function(e) {
   const liElement = e.target.closest("li");
   e.target.className.match(/edit/) ? editTodo(liElement) : 
     e.target.className.match(/trash/) ? deleteTodo(liElement) : null;
+};
+
+document.querySelector("ul").ondblclick = function(e) {
+  const completedTodoElement = e.target.closest("li");
+  if(!completedTodoElement) {
+    return;
+  }
+
+  const completedTodoItem = todos.find(todo => todo.id == completedTodoElement.dataset.todoId);
+  completedTodoItem.done = !completedTodoItem.done;
+  completedTodoElement.classList.toggle("completed");
+  updateLocalStorage();
 };
 
 function editTodo(todoElement) {
@@ -64,19 +78,19 @@ saveButton.onclick = function() {
   const editedTodoId = saveButton.dataset.editedTodoId;
   const editedTodoItem = todos.find(todo => todo.id == editedTodoId);
   editedTodoItem.value = inputElement.value;
-  updateLocalStorage();
   addButton.hidden = false;
   saveButton.hidden = true;
   const editedTodoElement = Array.prototype.find.call(document.querySelectorAll(`li`), li => li.dataset.todoId === editedTodoId);
   editedTodoElement.querySelector(".content").textContent = inputElement.value;
   inputElement.value = "";
+  updateLocalStorage();
 }
 
 function deleteTodo(todoElement) {
   const removedTodoId = todoElement.dataset.todoId;
-  const editedTodoItemIndex = todos.findIndex(todo => todo.id == removedTodoId);
+  const removedTodoItemIndex = todos.findIndex(todo => todo.id == removedTodoId);
   todoElement.remove();
-  todos.splice(editedTodoItemIndex, 1);
+  todos.splice(removedTodoItemIndex, 1);
   updateLocalStorage();
 }
 
