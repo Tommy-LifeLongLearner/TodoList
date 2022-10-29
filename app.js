@@ -14,7 +14,15 @@ addButton.onclick = function() {
     id: Date.now()
   }
   const newTodoElement = document.createElement("LI");
-  newTodoElement.innerHTML = `${newTodo.value}<i class="fa fa-edit"></i><i class="fa fa-trash"></i>`;
+  newTodoElement.innerHTML = `
+    <div class="content">
+      ${newTodo.value}
+    </div>
+    <div class="buttons">
+      <i class="fa fa-edit"></i>
+      <i class="fa fa-trash"></i>
+    </div>
+  `;
   newTodoElement.dataset.todoId = newTodo.id;
   
   todosElementsList.appendChild(newTodoElement);
@@ -23,12 +31,13 @@ addButton.onclick = function() {
 };
 
 document.querySelector("ul").onclick = function(e) {
-  e.target.className.match(/edit/) ? editTodo(e.target.parentElement) : 
-    e.target.className.match(/trash/) ? deleteTodo(e.target.parentElement) : null;
+  const liElement = e.target.closest("li");
+  e.target.className.match(/edit/) ? editTodo(liElement) : 
+    e.target.className.match(/trash/) ? deleteTodo(liElement) : null;
 };
 
 function editTodo(todoElement) {
-  inputElement.value = todoElement.textContent;
+  inputElement.value = todoElement.textContent.trim();
   saveButton.dataset.editedTodoId = todoElement.dataset.todoId;
   addButton.hidden = true;
   saveButton.hidden = false;
@@ -41,8 +50,7 @@ saveButton.onclick = function() {
   addButton.hidden = false;
   saveButton.hidden = true;
   const editedTodoElement = Array.prototype.find.call(document.querySelectorAll(`li`), li => li.dataset.todoId === editedTodoId);
-  editedTodoElement.innerHTML = `${inputElement.value}<i class="fa fa-edit"></i><i class="fa fa-trash"></i>`;
-  editedTodoElement.dataset.dataTodoId = editedTodoId;
+  editedTodoElement.querySelector(".content").textContent = inputElement.value;
   inputElement.value = "";
 }
 
