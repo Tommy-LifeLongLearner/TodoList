@@ -4,6 +4,7 @@ const todosElementsList = document.querySelector("ul");
 const addButton = document.querySelector("#add-button");
 const saveButton = document.querySelector("#save-button");
 
+// render the previously saved todo elements in local storage
 todos.forEach(todo => {
   const newTodoElement = document.createElement("LI");
   newTodoElement.dataset.todoId = todo.id;
@@ -20,18 +21,20 @@ todos.forEach(todo => {
   todosElementsList.appendChild(newTodoElement);
 });
 
-// add todo
+// add a todo element
 addButton.onclick = function() {
   if(!inputElement.value) {
     return;
   }
 
+  const newTodoElement = document.createElement("LI");
   const newTodo = {
     value: inputElement.value,
     id: Date.now(),
     done: false
   }
-  const newTodoElement = document.createElement("LI");
+  
+  newTodoElement.dataset.todoId = newTodo.id;
   newTodoElement.innerHTML = `
     <div class="content">
       ${newTodo.value}
@@ -41,7 +44,6 @@ addButton.onclick = function() {
       <i class="fa fa-trash"></i>
     </div>
   `;
-  newTodoElement.dataset.todoId = newTodo.id;
   
   todosElementsList.appendChild(newTodoElement);
   todos.push(newTodo);
@@ -49,12 +51,14 @@ addButton.onclick = function() {
   updateLocalStorage();
 };
 
+// handle the icon button that was clicked (edit/delete)
 document.querySelector("ul").onclick = function(e) {
   const liElement = e.target.closest("li");
   e.target.className.match(/edit/) ? editTodo(liElement) : 
     e.target.className.match(/trash/) ? deleteTodo(liElement) : null;
 };
 
+// toggle between done and undone todo
 document.querySelector("ul").ondblclick = function(e) {
   const completedTodoElement = e.target.closest("li");
   if(!completedTodoElement) {
@@ -67,6 +71,7 @@ document.querySelector("ul").ondblclick = function(e) {
   updateLocalStorage();
 };
 
+// edit the todo element
 function editTodo(todoElement) {
   inputElement.value = todoElement.textContent.trim();
   saveButton.dataset.editedTodoId = todoElement.dataset.todoId;
@@ -74,6 +79,7 @@ function editTodo(todoElement) {
   saveButton.hidden = false;
 }
 
+// save the todo element
 saveButton.onclick = function() {
   const editedTodoId = saveButton.dataset.editedTodoId;
   const editedTodoItem = todos.find(todo => todo.id == editedTodoId);
@@ -86,6 +92,7 @@ saveButton.onclick = function() {
   updateLocalStorage();
 }
 
+// delete the todo element
 function deleteTodo(todoElement) {
   const removedTodoId = todoElement.dataset.todoId;
   const removedTodoItemIndex = todos.findIndex(todo => todo.id == removedTodoId);
@@ -94,6 +101,7 @@ function deleteTodo(todoElement) {
   updateLocalStorage();
 }
 
+// update the saved todos in local storage
 function updateLocalStorage() {
   localStorage.todos = JSON.stringify(todos);
 }
