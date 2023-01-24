@@ -85,10 +85,18 @@ li .content {
 }
 
 li .buttons {
-  width: 70px;
+  width: 80px;
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+
+li .buttons > * {
+  margin-right: 4px;
+}
+
+li .buttons [type=checkbox] {
+  height: 20px;
 }
 
 li i:hover {

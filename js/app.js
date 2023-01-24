@@ -13,6 +13,7 @@ todos.forEach(todo => {
       ${todo.value}
     </div>
     <div class="buttons">
+      <input type="checkbox" ${todo.done ? "checked" : ""}>
       <i class="fa fa-edit"></i>
       <i class="fa fa-trash"></i>
     </div>
@@ -40,6 +41,7 @@ addButton.onclick = function() {
       ${newTodo.value}
     </div>
     <div class="buttons">
+      <input type="checkbox">
       <i class="fa fa-edit"></i>
       <i class="fa fa-trash"></i>
     </div>
@@ -59,7 +61,7 @@ document.querySelector("ul").onclick = function(e) {
 };
 
 // toggle between done and undone todo
-document.querySelector("ul").ondblclick = function(e) {
+document.querySelector("ul").onchange = function(e) {
   const completedTodoElement = e.target.closest("li");
   if(!completedTodoElement) {
     return;
